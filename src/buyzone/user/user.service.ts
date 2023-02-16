@@ -12,27 +12,29 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    try {
-      const user = await this.user.create(createUserDto);
-      return user;
-    } catch (err) {
-      console.log(err);
-    }
+    const user = await this.user.create(createUserDto);
+    return user;
   }
 
-  findAll() {
-    return this.user.find({});
+  async findAll() {
+    const users = await this.user.find({});
+    return users;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    const user = await this.user.findById(id);
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.user.findByIdAndUpdate(id, updateUserDto, {
+      new: true,
+    });
+    return user;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const user = await this.user.findByIdAndDelete(id);
+    return user;
   }
 }
