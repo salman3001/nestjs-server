@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { BuyzoneService } from './buyzone.service';
 import { BuyzoneController } from './buyzone.controller';
 import { UserModule } from './user/user.module';
-import { RouterModule } from '@nestjs/core';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   controllers: [BuyzoneController],
   providers: [BuyzoneService],
-  imports: [UserModule],
+  imports: [UserModule, AuthModule],
 })
 export class BuyzoneModule {}
