@@ -7,9 +7,7 @@ import { userDocument } from './schema/user.schema';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel('user', 'buyzone') private user: Model<userDocument>,
-  ) {}
+  constructor(@InjectModel('user') private user: Model<userDocument>) {}
 
   async create(createUserDto: CreateUserDto) {
     const user = await this.user.create(createUserDto);
@@ -17,17 +15,17 @@ export class UserService {
   }
 
   async findAll() {
-    const users = await this.user.find({});
+    const users = await this.user.find({}, { password: 0 });
     return users;
   }
 
   async findOne(id: string) {
-    const user = await this.user.findById(id);
+    const user = await this.user.findById(id, { password: 0 });
     return user;
   }
 
   async findByEmail(email: string) {
-    const user = await this.user.findOne({ email });
+    const user = await this.user.findOne({ email }, { password: 0 });
     return user;
   }
 
