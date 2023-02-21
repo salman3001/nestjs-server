@@ -27,26 +27,34 @@
     "colId": "history",
     "containerId": "",
     "name": "http://localhost:3000/api/auth/login",
-    "url": "http://localhost:3000/api/auth/getrefreshtoken",
+    "url": "http://localhost:3000/api/products/",
     "method": "GET",
     "sortNum": 0,
     "created": "2023-02-20T20:58:49.869Z",
-    "modified": "2023-02-21T05:10:52.805Z",
+    "modified": "2023-02-21T13:48:04.011Z",
     "headers": [
       {
         "name": "Cookie",
-        "value": "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYzQ4YzNkNjRjYTc3MDBmNWMzMWJkYiIsImlhdCI6MTY3Njk1NjA1NSwiZXhwIjoxNjc3MDQyNDU1fQ.BaxktGvm7m_5mXjyXarwG1ZTcyLETC9x84-Cm5Uih94; Path=/api/auth/getrefreshtoken; HttpOnly; SameSite=Strict"
+        "value": "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYzQ4YzNkNjRjYTc3MDBmNWMzMWJkYiIsImlhdCI6MTY3Njk1NjA1NSwiZXhwIjoxNjc3MDQyNDU1fQ.BaxktGvm7m_5mXjyXarwG1ZTcyLETC9x84-Cm5Uih94; Path=/api/auth/getrefreshtoken; HttpOnly; SameSite=Strict",
+        "isDisabled": true
       }
     ],
     "params": [],
     "body": {
-      "type": "json",
-      "raw": "{\n  \"email\":\"therodfighter@gmail.com\",\n  \"password\":\"Sallu@123\"\n}",
-      "form": []
-    },
-    "auth": {
-      "type": "bearer",
-      "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYzQ4Y2NmNjRjYTc3MDBmNWMzMWJkZiIsImlzQWRtaW4iOmZhbHNlLCJuYW1lIjoiU2FsbWFuIEtoYW4iLCJlbCI6InRoZXJvZGZpZ2h0ZXJAZ21haWwuY29tIiwiaWF0IjoxNjc2OTUyNzA1LCJleHAiOjE2NzY5NTM2MDV9.2dFVoKAbxGvETimnzdBR_eHTZr5eI2TVQauM0hEf0D"
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "name",
+          "value": "salman"
+        }
+      ],
+      "files": [
+        {
+          "name": "fimage",
+          "value": "../../../../Documents/Untitled2.jpg"
+        }
+      ]
     },
     "tests": []
   },

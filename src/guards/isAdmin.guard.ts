@@ -10,7 +10,7 @@ import { Request } from 'express';
 export class isAdminGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const req: Request = context.switchToHttp().getRequest();
-    const user = req.user;
+    const user = req['user'];
     if (user['isAdmin']) return true;
     throw new ForbiddenException('Please sign in as admin');
   }
