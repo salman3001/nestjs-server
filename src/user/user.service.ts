@@ -25,7 +25,7 @@ export class UserService {
   }
 
   async findByEmail(email: string) {
-    const user = await this.user.findOne({ email }, { password: 0 });
+    const user = await this.user.findOne({ email });
     return user;
   }
 

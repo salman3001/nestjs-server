@@ -7,10 +7,13 @@ import {
   Param,
   Delete,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Authguard } from 'src/auth/Auth.guard';
+import { isAdminGuard } from 'src/auth/isAdmin.guard';
 
 @Controller('user')
 export class UserController {
@@ -21,6 +24,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @UseGuards(Authguard, isAdminGuard)
   @Get()
   findAll() {
     return this.userService.findAll();
