@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, Length, IsEmail, Allow } from 'class-validator';
-import { isEmailExist } from 'src/utils/validationRules/isEmailExist';
+import { isEmailExist } from 'src/utils/validators/isEmailExist';
 
 export class CreateUserDto {
   @IsString()

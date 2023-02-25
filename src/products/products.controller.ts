@@ -7,29 +7,36 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFile,
+  UploadedFiles,
   Req,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import productImageUploadConfig from 'src/config/productImageUpload.config';
+import { Request } from 'express';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  @UseInterceptors(FilesInterceptor('images', 5, productImageUploadConfig))
+  @UsePipes(new ValidationPipe({ transform: true }))
+  create(
+    @Body() body: CreateProductDto,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Req() req: Request,
+  ) {
+    return this.productsService.create(body, req['filevalidationError'], files);
   }
 
   @Get()
-  @UseInterceptors(FileInterceptor('fimage'))
-  findAll(@Body() body: any, @UploadedFile() file: any) {
-    console.log(body);
-
-    // return this.productsService.findAll();
+  findAll() {
+    return this.productsService.findAll();
   }
 
   @Get(':id')
@@ -38,12 +45,24 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  @UseInterceptors(FilesInterceptor('images', 5, productImageUploadConfig))
+  @UsePipes(new ValidationPipe({ transform: true }))
+  update(
+    @Param('id') id: string,
+    @Body() body: UpdateProductDto,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Req() req: Request,
+  ) {
+    return this.productsService.update(
+      id,
+      body,
+      req['filevalidationError'],
+      files,
+    );
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+    return this.productsService.remove(id);
   }
 }

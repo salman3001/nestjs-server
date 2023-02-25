@@ -1,1 +1,115 @@
-[]
+[
+  {
+    "_id": "8d6bc589-8232-497a-a268-bfb3a70ebf27",
+    "colId": "91cf2970-04a3-4b33-a4a2-631c73ab94e2",
+    "containerId": "54c82fff-bae6-4cbb-a0fd-e78232ccd19e",
+    "name": "Product post request",
+    "url": "http://localhost:3000/api/products",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2023-02-22T12:35:24.084Z",
+    "modified": "2023-02-23T10:54:41.007Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "name",
+          "value": "vr"
+        },
+        {
+          "name": "category",
+          "value": "Accessory"
+        },
+        {
+          "name": "price",
+          "value": "150"
+        },
+        {
+          "name": "inStock",
+          "value": "67"
+        },
+        {
+          "name": "description",
+          "value": "akhsasnakna ahsai sash asas aihsa saish asas asas ia s asoas aish aso asa s askas"
+        }
+      ],
+      "files": [
+        {
+          "name": "images",
+          "value": "../../../../Documents/Untitled2.jpg"
+        },
+        {
+          "name": "images",
+          "value": "../../../../Documents/Untitled4.jpg"
+        }
+      ]
+    },
+    "tests": []
+  },
+  {
+    "_id": "b199b05c-7a0d-4b59-aa20-d5efc8654a3d",
+    "colId": "91cf2970-04a3-4b33-a4a2-631c73ab94e2",
+    "containerId": "54c82fff-bae6-4cbb-a0fd-e78232ccd19e",
+    "name": "get all products",
+    "url": "http://localhost:3000/api/products",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2023-02-23T10:54:11.960Z",
+    "modified": "2023-02-23T10:54:55.449Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "658d34ff-9825-4e8b-b4da-e800257019a5",
+    "colId": "91cf2970-04a3-4b33-a4a2-631c73ab94e2",
+    "containerId": "54c82fff-bae6-4cbb-a0fd-e78232ccd19e",
+    "name": "delete product",
+    "url": "http://localhost:3000/api/products/63f9086624dd235cd803706a",
+    "method": "DELETE",
+    "sortNum": 30000,
+    "created": "2023-02-23T14:43:42.992Z",
+    "modified": "2023-02-24T18:57:05.951Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "ad6cafd2-ee78-4951-b6dd-c57d207d5322",
+    "colId": "91cf2970-04a3-4b33-a4a2-631c73ab94e2",
+    "containerId": "54c82fff-bae6-4cbb-a0fd-e78232ccd19e",
+    "name": "update product",
+    "url": "http://localhost:3000/api/products/63f90ec0fa76df0d1ad99d77",
+    "method": "PATCH",
+    "sortNum": 40000,
+    "created": "2023-02-23T14:47:31.223Z",
+    "modified": "2023-02-24T20:50:45.685Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "name",
+          "value": "sallu"
+        },
+        {
+          "name": "oldImages[0]",
+          "value": "buyzone/images/products/productImage-1677271545762.jpeg"
+        }
+      ],
+      "files": [
+        {
+          "name": "images",
+          "value": "../../../../Documents/Untitled2.jpg",
+          "isDisabled": true
+        }
+      ]
+    },
+    "tests": []
+  }
+]

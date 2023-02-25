@@ -8,9 +8,6 @@ export class CreateProductDto {
   name: string;
 
   @IsNotEmpty()
-  images: string[];
-
-  @IsNotEmpty()
   category: string;
 
   @IsNotEmpty()
