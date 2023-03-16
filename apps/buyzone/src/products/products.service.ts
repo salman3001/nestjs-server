@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -14,15 +19,9 @@ export class ProductsService {
     @InjectModel('product') private readonly Product: Model<productDocument>,
   ) {}
 
-  async create(
-    body: CreateProductDto,
-    validationError: string[],
-    files: Express.Multer.File[],
-  ) {
+  async create(body: CreateProductDto, files: Express.Multer.File[]) {
     const { imageAbsolutePaths, imageRelativePaths } =
       this.getImageAbsoluteAndRelativePaths(files);
-
-    this.checkFileValidationError(validationError, imageAbsolutePaths);
 
     const product = await this.Product.create({
       images: [...imageRelativePaths],
@@ -50,30 +49,34 @@ export class ProductsService {
   async update(
     id: string,
     body: UpdateProductDto,
-    validationError: string[],
     files: Express.Multer.File[],
   ) {
     const { imageAbsolutePaths, imageRelativePaths } =
       this.getImageAbsoluteAndRelativePaths(files);
-    this.checkFileValidationError(validationError, imageAbsolutePaths);
 
-    const { oldImages, ...data } = body;
+    const oldProduct = await this.Product.findById(id);
 
-    const updatedProduct = await this.Product.findByIdAndUpdate(
-      id,
-      {
-        ...data,
-        images: [...imageRelativePaths],
-      },
-      { new: true },
-    );
-    if (!updatedProduct) {
+    if (!oldProduct) {
       throw new HttpException(
-        'failed to update product! something went wrong',
+        'this product doesnt exist',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const updatedProduct = await this.Product.findByIdAndUpdate(id, {
+      ...body,
+      images: [...imageRelativePaths],
+    });
+
+    if (!updatedProduct) {
+      this.deleteUploadedImage(imageAbsolutePaths);
+      throw new HttpException(
+        'Failed to update product',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
-      this.deleteUploadedImage(imageAbsolutePaths);
     }
+
+    const { images: oldImages } = oldProduct;
     if (oldImages != null && oldImages.length > 0) {
       this.deleteUploadedImage(oldImages, 'relative');
     }
@@ -92,6 +95,18 @@ export class ProductsService {
       this.deleteUploadedImage(deletedProduct.images, 'relative');
       return deletedProduct;
     }
+  }
+
+  async incrementReview(id, totalStars: number) {
+    const updatedProduct = await this.Product.findByIdAndUpdate(id, {
+      $inc: { totalReviews: 1, totalStars },
+    });
+
+    if (!updatedProduct) {
+      throw new InternalServerErrorException('failed to add review');
+    }
+
+    return updatedProduct;
   }
 
   //Helper functions below
@@ -134,19 +149,6 @@ export class ProductsService {
         imageAbsolutePaths,
         imageRelativePaths,
       };
-    }
-  }
-
-  checkFileValidationError(
-    validationErrors: string[],
-    absoluteImagePaths: string[],
-  ) {
-    if (validationErrors != null && validationErrors.length > 0) {
-      throw new HttpException(
-        validationErrors[0],
-        HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-      );
-      this.deleteUploadedImage(absoluteImagePaths);
     }
   }
 }

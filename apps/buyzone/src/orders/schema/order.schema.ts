@@ -1,19 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-export type productDocument = HydratedDocument<product>;
+export type OrderDocument = HydratedDocument<Order>;
 
 @Schema({ timestamps: true })
-export class product {
+export class Order {
   @Prop()
-  userId: mongoose.Types.ObjectId;
+  userId: string;
 
   @Prop()
   products: {
     productId: string;
     quantity: string;
     price: string;
-  };
+  }[];
 
   @Prop()
   deliveryAddress: {
@@ -32,4 +32,4 @@ export class product {
   };
 }
 
-export const productSchema = SchemaFactory.createForClass(product);
+export const OrderSchema = SchemaFactory.createForClass(Order);

@@ -1,26 +1,61 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { Model } from 'mongoose';
+import { ProductsService } from '../products/products.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { reviewDocument } from './schema/review.schema';
 
 @Injectable()
 export class ReviewsService {
-  create(createReviewDto: CreateReviewDto) {
-    return 'This action adds a new review';
+  constructor(
+    private readonly productServices: ProductsService,
+    private readonly Review: Model<reviewDocument>,
+  ) {}
+
+  async create(createReviewDto: CreateReviewDto) {
+    const { productId, userId, totalStars } = createReviewDto;
+    const isReviewExists = await this.Review.find({ productId, userId });
+
+    if (isReviewExists) {
+      throw new BadRequestException('Only one review is excepted per user');
+    } else {
+      const review = await this.Review.create(createReviewDto);
+      const updatedProduct = await this.productServices.incrementReview(
+        productId,
+        totalStars,
+      );
+      return { review, updatedProduct };
+    }
   }
 
-  findAll() {
-    return `This action returns all reviews`;
+  async findByProductId(productId: string) {
+    const reviews = await this.Review.find({ productId });
+    if (!reviews) {
+      throw new HttpException(
+        'No Review Found for this product',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return reviews;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
+  async findOne(id: string) {
+    const review = await this.Review.findById(id);
+    if (!review) throw new NotFoundException('This review was not found');
+    return review;
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+  async remove(id: string) {
+    const deletedReview = this.Review.findByIdAndDelete(id);
+    if (!deletedReview)
+      throw new InternalServerErrorException('Failed to delete this review');
+    return deletedReview;
   }
 }

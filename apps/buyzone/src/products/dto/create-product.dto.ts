@@ -1,4 +1,4 @@
-import { IsNotEmpty, Length } from 'class-validator';
+import { IsNotEmpty, IsOptional, Length } from 'class-validator';
 import { Type } from 'class-transformer';
 import mongoose from 'mongoose';
 
@@ -21,6 +21,11 @@ export class CreateProductDto {
   @IsNotEmpty()
   description: string;
 
-  @Type(() => mongoose.Types.ObjectId)
-  reviews: mongoose.Types.ObjectId[];
+  @IsOptional()
+  @Type(() => Number)
+  totalReviews: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  averageStars: number;
 }

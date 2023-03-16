@@ -15,6 +15,7 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     MongooseModule.forRoot(process.env.BUYZONE_DB_URI, {
       dbName: 'buyzone',
+      connectionName: 'buyzone',
     }),
     UserModule,
     AuthModule,

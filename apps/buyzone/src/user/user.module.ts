@@ -6,7 +6,9 @@ import { UserSchema } from './schema/user.schema';
 import { IsEmailExistConstraint } from '../pipes/classValidatorPipes/isEmailExist';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'user', schema: UserSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: 'user', schema: UserSchema }], 'buzone'),
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

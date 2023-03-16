@@ -1,26 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { OrderDocument } from './schema/order.schema';
 
 @Injectable()
 export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  constructor(
+    @InjectModel('Order') private readonly Order: Model<OrderDocument>,
+  ) {}
+  async create(createOrderDto: CreateOrderDto) {
+    const order = await this.Order.create(createOrderDto);
+    if (!order) {
+      throw new HttpException(
+        'Faled  to create Order. Please Try Again',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return order;
   }
 
-  findAll() {
-    return `This action returns all orders`;
+  async findAll() {
+    const orders = await this.Order.find();
+    if (!orders) {
+      throw new HttpException(
+        'Faled  to create Order. Please Try Again',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return orders;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: string) {
+    const order = await this.Order.findById(id);
+    if (!order) {
+      throw new HttpException(
+        'Faled  to create Order. Please Try Again',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+      return order;
+    }
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
+    const updatedOrder = await this.Order.findByIdAndUpdate(id, updateOrderDto);
+    if (!updatedOrder) {
+      throw new HttpException(
+        'Faled  to create Order. Please Try Again',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+      return updatedOrder;
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  async findByUserId(userId: string) {
+    const orders = await this.Order.find({ userId });
+    if (!orders) {
+      throw new HttpException(
+        'Faled  to create Order. Please Try Again',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+      return orders;
+    }
   }
 }

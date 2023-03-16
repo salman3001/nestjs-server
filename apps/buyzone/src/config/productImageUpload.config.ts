@@ -1,3 +1,4 @@
+import { UnsupportedMediaTypeException } from '@nestjs/common';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import * as multer from 'multer';
 import * as path from 'path';
@@ -19,10 +20,12 @@ const productImageUploadConfig: MulterOptions = {
     if (accesptedFileTypes.includes(file.mimetype)) {
       cb(null, true);
     } else if (!accesptedFileTypes.includes(file.mimetype)) {
-      req.filevalidationError.push(
-        `Image should be only of type png,jpg or jpeg`,
+      cb(
+        new UnsupportedMediaTypeException(
+          'Image should be only of type png,jpg or jpeg',
+        ),
+        null,
       );
-      cb(null, false);
     }
   },
   limits: { fileSize: 1000 * 1000 },

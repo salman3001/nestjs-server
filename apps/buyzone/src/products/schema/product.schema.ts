@@ -23,8 +23,11 @@ export class Product {
   @Prop()
   description: string;
 
-  @Prop()
-  reviews: mongoose.Types.ObjectId[];
+  @Prop({ default: 0 })
+  totalReviews: number;
+
+  @Prop({ default: 0 })
+  averageRating: number;
 }
 
 export const productSchema = SchemaFactory.createForClass(Product);
