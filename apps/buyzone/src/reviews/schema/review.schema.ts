@@ -6,7 +6,7 @@ export type reviewDocument = HydratedDocument<review>;
 @Schema({ timestamps: true })
 export class review {
   @Prop()
-  reviewedBy: mongoose.Types.ObjectId;
+  reviewedBy: string;
 
   @Prop()
   product: mongoose.Types.ObjectId;

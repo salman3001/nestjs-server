@@ -3,12 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { OrderDocument } from './schema/order.schema';
+import { OrderDocument, Order } from './schema/order.schema';
 
 @Injectable()
 export class OrdersService {
   constructor(
-    @InjectModel('Order') private readonly Order: Model<OrderDocument>,
+    @InjectModel(Order.name, 'buyzone')
+    private readonly Order: Model<OrderDocument>,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
     const order = await this.Order.create(createOrderDto);

@@ -6,16 +6,18 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ProductsService } from '../products/products.service';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
-import { reviewDocument } from './schema/review.schema';
+
+import { review, reviewDocument } from './schema/review.schema';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     private readonly productServices: ProductsService,
+    @InjectModel(review.name, 'buyzone')
     private readonly Review: Model<reviewDocument>,
   ) {}
 

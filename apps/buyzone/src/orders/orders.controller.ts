@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
   UnauthorizedException,
   NotFoundException,
@@ -15,8 +14,8 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Authguard } from '../guards/Auth.guard';
 import { isAdminGuard } from '../guards/isAdmin.guard';
-import { User } from '../decorators/user,decorator';
-import { IUser } from '../user/interface/user,interface';
+import { User } from '../decorators/user.decorator';
+import { IUser } from '../user/interface/user.interface';
 
 @Controller()
 export class OrdersController {
@@ -29,14 +28,15 @@ export class OrdersController {
   }
 
   @Get()
-  @UseGuards(Authguard, isAdminGuard)
+  @UseGuards(Authguard)
+  @UseGuards(isAdminGuard)
   findAll() {
     return this.ordersService.findAll();
   }
 
   @Get(':id')
   @UseGuards(Authguard)
-  async findOne(@Param('id') id: string, @User user: IUser) {
+  async findOne(@Param('id') id: string, @User() user: IUser) {
     const order = await this.ordersService.findOne(id);
     if (user.isAdmin) {
       return order;
@@ -50,7 +50,8 @@ export class OrdersController {
   }
 
   @Patch(':id')
-  @UseGuards(Authguard, isAdminGuard)
+  @UseGuards(Authguard)
+  @UseGuards(isAdminGuard)
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.update(id, updateOrderDto);
   }

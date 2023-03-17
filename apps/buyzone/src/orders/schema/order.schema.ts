@@ -9,27 +9,28 @@ export class Order {
   userId: string;
 
   @Prop()
-  products: {
+  products: Array<{
     productId: string;
     quantity: string;
     price: string;
-  }[];
+  }>;
 
-  @Prop()
-  deliveryAddress: {
-    building: string;
-    street: string;
-    city: string;
-    mobile: string;
-    pin: number;
-    addressLine: string;
-    country: 'UAE';
-    status: 'Pending' | 'Confirmed' | 'Delivered' | 'Cancled';
-    payment: {
-      mode: 'cod' | 'card';
-      paid: boolean;
-    };
-  };
+  // @Prop()
+  // deliveryAddress: {};
+  // // {
+  // //   building: string;
+  // //   street: string;
+  // //   city: string;
+  // //   mobile: string;
+  // //   pin: number;
+  // //   addressLine: string;
+  // //   // country: 'UAE';
+  // //   // status: 'Pending' | 'Confirmed' | 'Delivered' | 'Cancled';
+  // //   // payment: {
+  // //   //   mode: 'cod' | 'card';
+  // //   //   paid: boolean;
+  // //   // };
+  // // };
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

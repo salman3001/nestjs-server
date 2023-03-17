@@ -2,12 +2,14 @@ import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from './schema/user.schema';
-import { IsEmailExistConstraint } from '../pipes/classValidatorPipes/isEmailExist';
+import { User, UserSchema } from './schema/user.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'user', schema: UserSchema }], 'buzone'),
+    MongooseModule.forFeature(
+      [{ name: User.name, schema: UserSchema }],
+      'buyzone',
+    ),
   ],
   controllers: [UserController],
   providers: [UserService],

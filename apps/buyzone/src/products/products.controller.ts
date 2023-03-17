@@ -8,7 +8,6 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
-  Req,
   UsePipes,
   ValidationPipe,
   UseGuards,
@@ -26,7 +25,8 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  @UseGuards(Authguard, isAdminGuard)
+  @UseGuards(Authguard)
+  @UseGuards(isAdminGuard)
   @UseInterceptors(FilesInterceptor('images', 5, productImageUploadConfig))
   @UsePipes(new ValidationPipe({ transform: true }))
   create(
@@ -47,7 +47,8 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  @UseGuards(Authguard, isAdminGuard)
+  @UseGuards(Authguard)
+  @UseGuards(isAdminGuard)
   @UseInterceptors(FilesInterceptor('images', 5, productImageUploadConfig))
   @UsePipes(new ValidationPipe({ transform: true }))
   update(
@@ -59,7 +60,8 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  @UseGuards(Authguard, isAdminGuard)
+  @UseGuards(Authguard)
+  @UseGuards(isAdminGuard)
   remove(@Param('id') id: string) {
     return this.productsService.remove(id);
   }

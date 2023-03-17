@@ -20,11 +20,13 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @UseGuards(Authguard)
   create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @UseGuards(Authguard, isAdminGuard)
+  @UseGuards(Authguard)
+  @UseGuards(isAdminGuard)
   @Get()
   findAll() {
     return this.userService.findAll();
@@ -36,6 +38,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @UseGuards(Authguard)
   update(
     @Param('id') id: string,
     @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
@@ -44,6 +47,8 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(Authguard)
+  @UseGuards(isAdminGuard)
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }

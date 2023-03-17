@@ -9,27 +9,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class CreateOrderDto {
-  @IsNotEmpty()
-  userId: string;
-
-  @IsNotEmpty()
-  @ValidateNested({ each: true })
-  products: Products[];
-
-  @IsNotEmpty()
-  @ValidateNested()
-  deliveryAddress: DeliveryAddress;
-
-  @IsNotEmpty()
-  @IsIn(['Pending', 'Confirmed', 'Delivered', 'Cancled'])
-  status: string;
-
-  @IsNotEmpty()
-  @ValidateNested()
-  payment: Payment;
-}
-
 class DeliveryAddress {
   @IsNotEmpty()
   @MinLength(2)
@@ -82,4 +61,24 @@ class Products {
   @IsNotEmpty()
   @Type(() => Number)
   price: number;
+}
+
+export class CreateOrderDto {
+  @IsNotEmpty()
+  userId: string;
+
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  products: Products[];
+
+  @ValidateNested()
+  deliveryAddress: DeliveryAddress;
+
+  @IsNotEmpty()
+  @IsIn(['Pending', 'Confirmed', 'Delivered', 'Cancled'])
+  status: string;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  payment: Payment;
 }

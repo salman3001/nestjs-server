@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { productDocument } from './schema/product.schema';
+import { productDocument, Product } from './schema/product.schema';
 import * as fs from 'fs';
 import * as path from 'path';
 import pathModule from '../config/path.config';
@@ -16,7 +16,8 @@ import pathModule from '../config/path.config';
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectModel('product') private readonly Product: Model<productDocument>,
+    @InjectModel(Product.name, 'buyzone')
+    private readonly Product: Model<productDocument>,
   ) {}
 
   async create(body: CreateProductDto, files: Express.Multer.File[]) {
