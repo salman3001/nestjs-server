@@ -28,14 +28,13 @@ export class OrdersController {
   }
 
   @Get()
-  @UseGuards(Authguard)
-  @UseGuards(isAdminGuard)
+  @UseGuards(Authguard, isAdminGuard)
   findAll() {
     return this.ordersService.findAll();
   }
 
   @Get(':id')
-  @UseGuards(Authguard)
+  @UseGuards(Authguard, isAdminGuard)
   async findOne(@Param('id') id: string, @User() user: IUser) {
     const order = await this.ordersService.findOne(id);
     if (user.isAdmin) {
@@ -50,8 +49,7 @@ export class OrdersController {
   }
 
   @Patch(':id')
-  @UseGuards(Authguard)
-  @UseGuards(isAdminGuard)
+  @UseGuards(Authguard, isAdminGuard)
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.update(id, updateOrderDto);
   }

@@ -5,7 +5,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/nestjs-server/tsconfig.app.json"
+    "tsConfigPath": "apps/nestjs-server/tsconfig.app.json",
+    "plugins": ["@nestjs/swagger"]
   },
   "monorepo": true,
   "root": "apps/nestjs-server",
@@ -16,7 +17,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/nestjs-server/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/nestjs-server/tsconfig.app.json"
+        "tsConfigPath": "apps/nestjs-server/tsconfig.app.json",
+        "plugins": ["@nestjs/swagger"]
       }
     },
     "buyzone": {
@@ -25,7 +27,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/buyzone/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/buyzone/tsconfig.app.json"
+        "tsConfigPath": "apps/buyzone/tsconfig.app.json",
+        "plugins": ["@nestjs/swagger"]
       }
     }
   }

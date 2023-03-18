@@ -11,14 +11,14 @@ import { Model } from 'mongoose';
 import { ProductsService } from '../products/products.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 
-import { review, reviewDocument } from './schema/review.schema';
+import { Review, ReviewDocument } from './schema/review.schema';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     private readonly productServices: ProductsService,
-    @InjectModel(review.name, 'buyzone')
-    private readonly Review: Model<reviewDocument>,
+    @InjectModel(Review.name, 'buyzone')
+    private readonly Review: Model<ReviewDocument>,
   ) {}
 
   async create(createReviewDto: CreateReviewDto) {

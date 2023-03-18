@@ -20,13 +20,11 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @UseGuards(Authguard)
   create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @UseGuards(Authguard)
-  @UseGuards(isAdminGuard)
+  @UseGuards(Authguard, isAdminGuard)
   @Get()
   findAll() {
     return this.userService.findAll();
@@ -47,8 +45,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @UseGuards(Authguard)
-  @UseGuards(isAdminGuard)
+  @UseGuards(Authguard, isAdminGuard)
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }

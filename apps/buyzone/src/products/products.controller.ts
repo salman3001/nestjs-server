@@ -25,8 +25,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  @UseGuards(Authguard)
-  @UseGuards(isAdminGuard)
+  @UseGuards(Authguard, isAdminGuard)
   @UseInterceptors(FilesInterceptor('images', 5, productImageUploadConfig))
   @UsePipes(new ValidationPipe({ transform: true }))
   create(
@@ -47,10 +46,8 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  @UseGuards(Authguard)
-  @UseGuards(isAdminGuard)
+  @UseGuards(Authguard, isAdminGuard)
   @UseInterceptors(FilesInterceptor('images', 5, productImageUploadConfig))
-  @UsePipes(new ValidationPipe({ transform: true }))
   update(
     @Param('id') id: string,
     @Body() body: UpdateProductDto,
@@ -60,8 +57,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  @UseGuards(Authguard)
-  @UseGuards(isAdminGuard)
+  @UseGuards(Authguard, isAdminGuard)
   remove(@Param('id') id: string) {
     return this.productsService.remove(id);
   }

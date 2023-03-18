@@ -24,23 +24,23 @@ import { UserModule } from './user/user.module';
     OrdersModule,
     RouterModule.register([
       {
-        path: 'buyzone/users',
+        path: 'api/buyzone/users',
         module: UserModule,
       },
       {
-        path: 'buyzone/auth',
+        path: 'api/buyzone/auth',
         module: AuthModule,
       },
       {
-        path: 'buyzone/products',
+        path: 'api/buyzone/products',
         module: ProductsModule,
       },
       {
-        path: 'buyzone/reviews',
+        path: 'api/buyzone/reviews',
         module: ReviewsModule,
       },
       {
-        path: 'buyzone/orders',
+        path: 'api/buyzone/orders',
         module: OrdersModule,
       },
     ]),

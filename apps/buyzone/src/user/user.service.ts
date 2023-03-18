@@ -1,5 +1,6 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { hash } from 'bcrypt';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -13,12 +14,16 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { email } = createUserDto;
+    const { email, password } = createUserDto;
     const user = await this.findByEmail(email);
     if (user) {
       throw new UnprocessableEntityException('Email Already exist');
     }
-    const createdUser = await this.user.create(createUserDto);
+    const hashedPassword = this.createHashPassword(password);
+    const createdUser = await this.user.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
     return createdUser;
   }
 
@@ -47,5 +52,10 @@ export class UserService {
   async remove(id: string) {
     const user = await this.user.findByIdAndDelete(id);
     return user;
+  }
+
+  async createHashPassword(password) {
+    const hashedPass = await hash(password, 10);
+    return hashedPass;
   }
 }
