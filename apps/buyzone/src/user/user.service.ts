@@ -19,7 +19,7 @@ export class UserService {
     if (user) {
       throw new UnprocessableEntityException('Email Already exist');
     }
-    const hashedPassword = this.createHashPassword(password);
+    const hashedPassword = await this.createHashPassword(password);
     const createdUser = await this.user.create({
       ...createUserDto,
       password: hashedPassword,

@@ -38,7 +38,7 @@ export class ReviewsController {
   @UseGuards(Authguard)
   async remove(@Param('id') id: string, @User() user: IUser) {
     const review = await this.reviewsService.findOne(id);
-    if (review.reviewedBy === user.id) {
+    if (review.userId === user.id) {
       return this.reviewsService.remove(id);
     } else {
       throw new UnauthorizedException(

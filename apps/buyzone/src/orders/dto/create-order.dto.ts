@@ -3,7 +3,6 @@ import {
   IsIn,
   IsNotEmpty,
   IsOptional,
-  IsPhoneNumber,
   MaxLength,
   MinLength,
   ValidateNested,
@@ -26,7 +25,6 @@ class DeliveryAddress {
   city: string;
 
   @IsNotEmpty()
-  @IsPhoneNumber()
   @Type(() => Number)
   mobile: number;
 
@@ -47,6 +45,8 @@ class Payment {
   @IsNotEmpty()
   @IsIn(['cod', 'card'])
   mode: string;
+
+  @IsNotEmpty()
   paid: boolean;
 }
 
@@ -69,9 +69,11 @@ export class CreateOrderDto {
 
   @IsNotEmpty()
   @ValidateNested({ each: true })
+  @Type(() => Products)
   products: Products[];
 
   @ValidateNested()
+  @Type(() => DeliveryAddress)
   deliveryAddress: DeliveryAddress;
 
   @IsNotEmpty()
@@ -80,5 +82,6 @@ export class CreateOrderDto {
 
   @IsNotEmpty()
   @ValidateNested()
+  @Type(() => Payment)
   payment: Payment;
 }

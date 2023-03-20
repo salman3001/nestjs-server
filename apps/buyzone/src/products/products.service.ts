@@ -64,10 +64,14 @@ export class ProductsService {
       );
     }
 
-    const updatedProduct = await this.Product.findByIdAndUpdate(id, {
-      ...body,
-      images: [...imageRelativePaths],
-    });
+    const updatedProduct = await this.Product.findByIdAndUpdate(
+      id,
+      {
+        ...body,
+        images: [...imageRelativePaths],
+      },
+      { new: true },
+    );
 
     if (!updatedProduct) {
       this.deleteUploadedImage(imageAbsolutePaths);
@@ -98,10 +102,14 @@ export class ProductsService {
     }
   }
 
-  async incrementReview(id, totalStars: number) {
-    const updatedProduct = await this.Product.findByIdAndUpdate(id, {
-      $inc: { totalReviews: 1, totalStars },
-    });
+  async incrementReview(id: string, totalStars: number) {
+    const updatedProduct = await this.Product.findByIdAndUpdate(
+      id,
+      {
+        $inc: { totalReviews: 1, totalStars: totalStars },
+      },
+      { new: true },
+    );
 
     if (!updatedProduct) {
       throw new InternalServerErrorException('failed to add review');
@@ -110,6 +118,21 @@ export class ProductsService {
     return updatedProduct;
   }
 
+  async decrementReview(productId: string, totalStars: number) {
+    const updatedProduct = await this.Product.findByIdAndUpdate(
+      productId,
+      {
+        $inc: { totalReviews: -1, totalStars: -totalStars },
+      },
+      { new: true },
+    );
+
+    if (!updatedProduct) {
+      throw new InternalServerErrorException('failed to add review');
+    }
+
+    return updatedProduct;
+  }
   //Helper functions below
 
   deleteUploadedImage(uploadedImagePaths: string[], pathType?: 'relative') {

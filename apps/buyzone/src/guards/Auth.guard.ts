@@ -13,15 +13,18 @@ export class Authguard implements CanActivate {
   constructor(private configService: ConfigService) {}
   canActivate(context: ExecutionContext): boolean {
     const req: Request = context.switchToHttp().getRequest();
+
+    const token = req.cookies['ACCESS_TOKEN'];
     try {
-      const token = req.headers.authorization.split(' ')[1];
       const user = jwt.verify(token, this.configService.get('JWT_SECERETE'));
       console.log(user);
 
       if (!user) throw new UnauthorizedException();
+      req['user'] = user;
     } catch (error) {
       throw new UnauthorizedException();
     }
+
     return true;
   }
 }

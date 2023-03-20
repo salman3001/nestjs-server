@@ -28,18 +28,22 @@ export class OrdersController {
   }
 
   @Get()
-  @UseGuards(Authguard, isAdminGuard)
-  findAll() {
-    return this.ordersService.findAll();
+  @UseGuards(Authguard)
+  async findAll(@User() user: IUser) {
+    if (user.isAdmin) {
+      const orders = await this.ordersService.findAll();
+      return orders;
+    }
+    const orders = await this.ordersService.findByUserId(user.id);
+    return orders;
   }
 
   @Get(':id')
-  @UseGuards(Authguard, isAdminGuard)
+  @UseGuards(Authguard)
   async findOne(@Param('id') id: string, @User() user: IUser) {
     const order = await this.ordersService.findOne(id);
-    if (user.isAdmin) {
-      return order;
-    } else if (order._id.toString() === user.id) {
+
+    if (user.isAdmin || order.userId === user.id) {
       return order;
     } else {
       throw new UnauthorizedException(
@@ -52,15 +56,5 @@ export class OrdersController {
   @UseGuards(Authguard, isAdminGuard)
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.update(id, updateOrderDto);
-  }
-
-  @UseGuards(Authguard)
-  @Get(':userId')
-  async getUserOrder(@Param('userId') userId: string) {
-    const orders = await this.ordersService.findByUserId(userId);
-    if (!orders) {
-      throw new NotFoundException('No Order found for this user');
-    }
-    return orders;
   }
 }

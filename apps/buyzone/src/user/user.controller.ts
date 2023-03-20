@@ -8,12 +8,15 @@ import {
   Delete,
   ValidationPipe,
   UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Authguard } from '../guards/Auth.guard';
 import { isAdminGuard } from '../guards/isAdmin.guard';
+import { User } from '../decorators/user.decorator';
+import { IUser } from './interface/user.interface';
 
 @Controller()
 export class UserController {
@@ -30,18 +33,28 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @UseGuards(Authguard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  findOne(@Param('id') id: string, @User() user: IUser) {
+    if (user.isAdmin || user.id === id) {
+      return this.userService.findOne(id);
+    } else {
+      throw new ForbiddenException();
+    }
   }
 
   @Patch(':id')
   @UseGuards(Authguard)
   update(
     @Param('id') id: string,
-    @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserDto,
+    @User() user: IUser,
   ) {
-    return this.userService.update(id, updateUserDto);
+    if (user.isAdmin || user.id === id) {
+      return this.userService.update(id, updateUserDto);
+    } else {
+      throw new ForbiddenException();
+    }
   }
 
   @Delete(':id')

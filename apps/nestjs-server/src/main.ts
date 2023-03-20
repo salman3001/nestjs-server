@@ -10,7 +10,6 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useStaticAssets(join(__dirname, '..', '..', 'public'));
   app.useStaticAssets(join(__dirname, '..', '..', 'uploads'));
-  app.setGlobalPrefix('api', { exclude: ['/'] });
   await app.listen(3000);
 }
 bootstrap();

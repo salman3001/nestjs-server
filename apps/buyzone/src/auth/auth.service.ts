@@ -18,32 +18,57 @@ export class AuthService {
 
     if (!user) throw new UnauthorizedException();
 
-    const parload = {
+    const payload = {
       id: user?._id,
       isAdmin: user.isAdmin,
       name: user.firstName + ' ' + user.lastName,
       email: user.email,
     };
 
-    const accessToken = this.generateAccessToken(parload);
+    const accessToken = this.generateAccessToken(payload);
 
     const refreshToken = this.generateRefreshToken(user._id);
 
     res.cookie('REFRESH_TOKEN', refreshToken, {
-      path: '/api/auth/getrefreshtoken',
-      sameSite: true,
+      path: '/api/buyzone/auth/getrefreshtoken',
+      maxAge: 1000 * 60 * 60 * 12,
+      httpOnly: true,
+      secure: false,
+    });
+
+    res.cookie('ACCESS_TOKEN', accessToken, {
+      path: '/',
+      maxAge: 1000 * 60 * 15,
       httpOnly: true,
       secure: false,
     });
 
     return {
       message: 'success',
-      accessToken,
     };
   }
 
-  async getRefreshToken(req: Request) {
-    const refreshToken = req.cookies['refresh_token'];
+  logout(res: Response) {
+    res.cookie('ACCESS_TOKEN', 'null', {
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 12,
+      httpOnly: true,
+      secure: false,
+    });
+
+    res.cookie('REFRESH_TOKEN', 'null', {
+      path: '/api/buyzone/auth/getrefreshtoken',
+      httpOnly: true,
+      secure: false,
+    });
+
+    return {
+      message: 'Logout success',
+    };
+  }
+
+  async getRefreshToken(req: Request, res: Response) {
+    const refreshToken = req.cookies['REFRESH_TOKEN'];
     try {
       const userDecode = jwt.verify(
         refreshToken,
@@ -59,7 +84,14 @@ export class AuthService {
           email: user.email,
         });
 
-        return { accessToken };
+        res.cookie('ACCESS_TOKEN', accessToken, {
+          path: '/',
+          maxAge: 1000 * 60 * 15,
+          httpOnly: true,
+          secure: false,
+        });
+
+        return { message: 'Access token reniew success' };
       }
     } catch (err) {
       throw new UnauthorizedException('refresh token not valid! Please login.');

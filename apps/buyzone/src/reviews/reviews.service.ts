@@ -23,9 +23,11 @@ export class ReviewsService {
 
   async create(createReviewDto: CreateReviewDto) {
     const { productId, userId, totalStars } = createReviewDto;
+    console.log(createReviewDto);
+
     const isReviewExists = await this.Review.find({ productId, userId });
 
-    if (isReviewExists) {
+    if (isReviewExists.length > 0) {
       throw new BadRequestException('Only one review is excepted per user');
     } else {
       const review = await this.Review.create(createReviewDto);
@@ -55,9 +57,13 @@ export class ReviewsService {
   }
 
   async remove(id: string) {
-    const deletedReview = this.Review.findByIdAndDelete(id);
+    const deletedReview = await this.Review.findByIdAndDelete(id);
     if (!deletedReview)
       throw new InternalServerErrorException('Failed to delete this review');
-    return deletedReview;
+    const updatedProduct = await this.productServices.decrementReview(
+      deletedReview.productId,
+      deletedReview.totalStars,
+    );
+    return { deletedReview, updatedProduct };
   }
 }

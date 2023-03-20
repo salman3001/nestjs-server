@@ -27,7 +27,7 @@ export class Product {
   totalReviews: number;
 
   @Prop({ default: 0 })
-  averageRating: number;
+  totalStars: number;
 }
 
 export const productSchema = SchemaFactory.createForClass(Product);

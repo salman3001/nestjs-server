@@ -17,8 +17,16 @@ export class AuthController {
     return { ...resObject };
   }
 
+  @Get('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    return this.authservice.logout(res);
+  }
+
   @Get('getrefreshtoken')
-  async refreshToken(@Req() req: Request) {
-    return await this.authservice.getRefreshToken(req);
+  async refreshToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.authservice.getRefreshToken(req, res);
   }
 }
