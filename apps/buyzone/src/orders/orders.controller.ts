@@ -7,7 +7,7 @@ import {
   Param,
   UseGuards,
   UnauthorizedException,
-  NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -16,6 +16,7 @@ import { Authguard } from '../guards/Auth.guard';
 import { isAdminGuard } from '../guards/isAdmin.guard';
 import { User } from '../decorators/user.decorator';
 import { IUser } from '../user/interface/user.interface';
+import { IStatus } from './orderQuery,interface';
 
 @Controller()
 export class OrdersController {
@@ -29,12 +30,12 @@ export class OrdersController {
 
   @Get()
   @UseGuards(Authguard)
-  async findAll(@User() user: IUser) {
+  async findAll(@User() user: IUser, @Query('status') status: IStatus) {
     if (user.isAdmin) {
-      const orders = await this.ordersService.findAll();
+      const orders = await this.ordersService.findAll(status);
       return orders;
     }
-    const orders = await this.ordersService.findByUserId(user.id);
+    const orders = await this.ordersService.findByUserId(user.id, status);
     return orders;
   }
 

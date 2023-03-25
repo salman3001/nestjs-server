@@ -12,6 +12,11 @@ import { productDocument, Product } from './schema/product.schema';
 import * as fs from 'fs';
 import * as path from 'path';
 import pathModule from '../config/path.config';
+import {
+  IMatch,
+  IPriceRange,
+  IProductQuery,
+} from './interface/IProductQuery.interface';
 
 @Injectable()
 export class ProductsService {
@@ -39,8 +44,49 @@ export class ProductsService {
     }
   }
 
-  async findAll() {
-    return await this.Product.find();
+  async findAll(productQuery: IProductQuery) {
+    const {
+      search,
+      category,
+      priceStart = '0',
+      priceEnd = '10000000',
+      inStock = 'true',
+      pageLimit = '20',
+      pageSkip = '0',
+      sortPrice = '1',
+      sortDate = '1',
+    } = productQuery;
+
+    const match: IMatch = {};
+    if (category != null) match.category = category;
+    if (search != null) match.name = new RegExp(search, 'i');
+
+    if (inStock === 'true') {
+      match.inStock = { $gt: 0 };
+    } else if (inStock === 'false') {
+      match.inStock = { $gte: 0 };
+    } else {
+      match.inStock = { $gt: 0 };
+    }
+
+    const priceRang: IPriceRange = {
+      $and: [
+        { price: { $gte: Number(priceStart) } },
+        { price: { $lte: Number(priceEnd) } },
+      ],
+    };
+
+    if (priceStart != null) priceRang.$and[0].price.$gte = Number(priceStart);
+    if (priceEnd != null) priceRang.$and[1].price.$lte = Number(priceEnd);
+
+    const sort: { price?: number; updatedAt?: number } = {};
+    if (sortPrice != null) sort.price = Number(sortPrice);
+    if (sortDate != null) sort.updatedAt = Number(sortDate);
+
+    return await this.Product.find({ ...match, ...priceRang })
+      .limit(Number(pageLimit))
+      .skip(Number(pageLimit) * Number(pageSkip))
+      .sort({ ...(sort as { price: -1 | 1; updateAt: -1 | 1 }) });
   }
 
   async findOne(id: string) {

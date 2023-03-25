@@ -11,6 +11,7 @@ import {
   UsePipes,
   ValidationPipe,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -19,6 +20,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import productImageUploadConfig from '../config/productImageUpload.config';
 import { Authguard } from '../guards/Auth.guard';
 import { isAdminGuard } from '../guards/isAdmin.guard';
+import { IProductQuery } from './interface/IProductQuery.interface';
 
 @Controller()
 export class ProductsController {
@@ -36,8 +38,8 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Query() productQuery: IProductQuery) {
+    return this.productsService.findAll(productQuery);
   }
 
   @Get(':id')

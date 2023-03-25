@@ -41,7 +41,7 @@ export class ReviewsService {
 
   async findByProductId(productId: string) {
     const reviews = await this.Review.find({ productId });
-    if (!reviews) {
+    if (reviews.length < 1) {
       throw new HttpException(
         'No Review Found for this product',
         HttpStatus.NOT_FOUND,

@@ -27,7 +27,7 @@ export class AuthService {
 
     const accessToken = this.generateAccessToken(payload);
 
-    const refreshToken = this.generateRefreshToken(user._id);
+    const refreshToken = this.generateRefreshToken(payload);
 
     res.cookie('REFRESH_TOKEN', refreshToken, {
       path: '/api/buyzone/auth/getrefreshtoken',
@@ -43,24 +43,23 @@ export class AuthService {
       secure: false,
     });
 
+    res.cookie('IS_LOGGED_IN', true, {
+      path: '/',
+      maxAge: 1000 * 60 * 15,
+      httpOnly: false,
+      secure: false,
+    });
+
     return {
       message: 'success',
+      user: payload,
     };
   }
 
   logout(res: Response) {
-    res.cookie('ACCESS_TOKEN', 'null', {
-      path: '/',
-      maxAge: 1000 * 60 * 60 * 12,
-      httpOnly: true,
-      secure: false,
-    });
-
-    res.cookie('REFRESH_TOKEN', 'null', {
-      path: '/api/buyzone/auth/getrefreshtoken',
-      httpOnly: true,
-      secure: false,
-    });
+    res.clearCookie('ACCESS_TOKEN');
+    res.clearCookie('IS_LOGGED_IN');
+    res.clearCookie('REFRESH_TOKEN');
 
     return {
       message: 'Logout success',
@@ -69,20 +68,22 @@ export class AuthService {
 
   async getRefreshToken(req: Request, res: Response) {
     const refreshToken = req.cookies['REFRESH_TOKEN'];
+
     try {
       const userDecode = jwt.verify(
         refreshToken,
         this.configService.get('JWT_SECERETE'),
-      );
+      ) as any;
 
       if (userDecode) {
-        const user = await this.usersService.findOne(userDecode['id']);
-        const accessToken = this.generateAccessToken({
+        const user = await this.usersService.findOne(userDecode.id);
+        const payload = {
           id: user?._id,
           isAdmin: user.isAdmin,
           name: user.firstName + ' ' + user.lastName,
           email: user.email,
-        });
+        };
+        const accessToken = this.generateAccessToken(payload);
 
         res.cookie('ACCESS_TOKEN', accessToken, {
           path: '/',
@@ -91,9 +92,17 @@ export class AuthService {
           secure: false,
         });
 
-        return { message: 'Access token reniew success' };
+        res.cookie('IS_LOGGED_IN', true, {
+          path: '/',
+          maxAge: 1000 * 60 * 15,
+          httpOnly: false,
+          secure: false,
+        });
+
+        return { message: 'success', user: userDecode };
       }
     } catch (err) {
+      console.log(err);
       throw new UnauthorizedException('refresh token not valid! Please login.');
     }
   }
@@ -116,8 +125,8 @@ export class AuthService {
     });
   }
 
-  generateRefreshToken(id) {
-    return jwt.sign({ id }, this.configService.get('JWT_SECERETE'), {
+  generateRefreshToken(payload: any) {
+    return jwt.sign(payload, this.configService.get('JWT_SECERETE'), {
       expiresIn: '1d',
     });
   }

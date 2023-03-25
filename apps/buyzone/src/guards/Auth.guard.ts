@@ -17,7 +17,6 @@ export class Authguard implements CanActivate {
     const token = req.cookies['ACCESS_TOKEN'];
     try {
       const user = jwt.verify(token, this.configService.get('JWT_SECERETE'));
-      console.log(user);
 
       if (!user) throw new UnauthorizedException();
       req['user'] = user;

@@ -18,6 +18,15 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:4000',
+      'http://localhost:5173',
+    ],
+    credentials: true,
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -25,9 +34,9 @@ async function bootstrap() {
     }),
   );
   app.use(cookieParser());
-  app.useStaticAssets(join(__dirname, '..', '..', 'public'));
-  app.useStaticAssets(join(__dirname, '..', '..', 'uploads'));
+  app.useStaticAssets(join(__dirname, '..', '..', '..', 'public'));
+  app.useStaticAssets(join(__dirname, '..', '..', '..', 'uploads'));
 
-  await app.listen(3000);
+  await app.listen(4000);
 }
 bootstrap();

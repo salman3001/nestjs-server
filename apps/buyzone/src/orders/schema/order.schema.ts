@@ -11,17 +11,17 @@ interface IOrder {
   pin: number;
   addressLine: string;
   country: string;
-  status: string;
-  payment: {
-    method: string;
-    paid: boolean;
-  };
 }
 
 interface IProducts {
   productId: string;
   quantity: number;
   price: number;
+}
+
+interface IPayment {
+  method: string;
+  paid: boolean;
 }
 
 @Schema({ timestamps: true })
@@ -59,6 +59,18 @@ export class Order {
     _id: false,
   })
   deliveryAddress: IOrder;
+
+  @Prop()
+  status: string;
+
+  @Prop({
+    type: {
+      method: String,
+      paid: Boolean,
+    },
+    _id: false,
+  })
+  payment: IPayment;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

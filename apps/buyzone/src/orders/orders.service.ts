@@ -8,6 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { ISearch, IStatus } from './orderQuery,interface';
 import { OrderDocument, Order } from './schema/order.schema';
 
 @Injectable()
@@ -26,8 +27,12 @@ export class OrdersService {
     return order;
   }
 
-  async findAll() {
-    const orders = await this.Order.find();
+  async findAll(status: IStatus) {
+    const search: ISearch = {};
+    if (status != null) search.status = status;
+
+    const orders = await this.Order.find({ ...search });
+    if (status != null) search.status = status;
     if (!orders) {
       throw new NotFoundException();
     }
@@ -50,8 +55,11 @@ export class OrdersService {
     return updatedOrder;
   }
 
-  async findByUserId(userId: string) {
-    const orders = await this.Order.find({ userId });
+  async findByUserId(userId: string, status: IStatus) {
+    const search: ISearch = {};
+    if (status != null) search.status = status;
+
+    const orders = await this.Order.find({ userId, ...search });
     if (!orders) {
       throw new NotFoundException();
     }
