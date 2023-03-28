@@ -25,7 +25,7 @@ async function bootstrap() {
       'http://localhost:5173',
       'https://salman3001.github.io',
     ],
-    credentials: true,
+    // credentials: true,
   });
 
   app.useGlobalPipes(
@@ -34,7 +34,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.use(cookieParser());
+  // app.use(cookieParser());
   app.useStaticAssets(join(__dirname, '..', '..', '..', 'public'));
   app.useStaticAssets(join(__dirname, '..', '..', '..', 'uploads'));
 

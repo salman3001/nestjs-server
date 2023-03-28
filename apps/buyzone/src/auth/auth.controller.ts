@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { Authguard } from '../guards/Auth.guard';
 import { isAdminGuard } from '../guards/isAdmin.guard';
 import { AuthService } from './auth.service';
@@ -18,33 +9,31 @@ export class AuthController {
   constructor(private authservice: AuthService) {}
 
   @Post('login')
-  async login(
-    @Body() body: logindto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async login(@Body() body: logindto) {
+    console.log('hi');
     const { email, password } = body;
-    const resObject = await this.authservice.login(email, password, res);
+    const resObject = await this.authservice.login(email, password);
     return { ...resObject };
   }
 
-  @Get('logout')
-  logout(@Res({ passthrough: true }) res: Response) {
-    return this.authservice.logout(res);
-  }
+  // @Get('logout')
+  // logout(@Res({ passthrough: true }) res: Response) {
+  //   return this.authservice.logout(res);
+  // }
 
-  @Get('getrefreshtoken')
-  async refreshToken(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    return await this.authservice.getRefreshToken(req, res);
-  }
+  // @Get('getrefreshtoken')
+  // async refreshToken(
+  //   @Req() req: Request,
+  //   @Res({ passthrough: true }) res: Response,
+  // ) {
+  //   return await this.authservice.getRefreshToken(req, res);
+  // }
 
   @Get('isloggedin')
   @UseGuards(Authguard)
   isLogedin() {
     return {
-      messeage: true,
+      message: true,
     };
   }
 
@@ -52,7 +41,7 @@ export class AuthController {
   @UseGuards(Authguard, isAdminGuard)
   isAdmin() {
     return {
-      messeage: true,
+      message: true,
     };
   }
 }

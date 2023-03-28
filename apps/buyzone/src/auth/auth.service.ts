@@ -4,7 +4,6 @@ import { compare } from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { userDocument } from '../user/schema/user.schema';
-import { Request, Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +12,7 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async login(email: string, password: string, res: Response) {
+  async login(email: string, password: string) {
     const user = await this.validateUser(email, password);
 
     if (!user) throw new UnauthorizedException();
@@ -27,85 +26,64 @@ export class AuthService {
 
     const accessToken = this.generateAccessToken(payload);
 
-    const refreshToken = this.generateRefreshToken(payload);
-
-    res.cookie('REFRESH_TOKEN', refreshToken, {
-      path: '/api/buyzone/auth/getrefreshtoken',
-      maxAge: 1000 * 60 * 60 * 12,
-      httpOnly: true,
-      secure: false,
-    });
-
-    res.cookie('ACCESS_TOKEN', accessToken, {
-      path: '/',
-      maxAge: 1000 * 60 * 15,
-      httpOnly: true,
-      secure: false,
-    });
-
-    res.cookie('IS_LOGGED_IN', true, {
-      path: '/',
-      maxAge: 1000 * 60 * 15,
-      httpOnly: false,
-      secure: false,
-    });
+    // const refreshToken = this.generateRefreshToken(payload);
 
     return {
       message: 'success',
-      user: payload,
+      token: accessToken,
     };
   }
 
-  logout(res: Response) {
-    res.clearCookie('ACCESS_TOKEN');
-    res.clearCookie('IS_LOGGED_IN');
-    res.clearCookie('REFRESH_TOKEN');
+  // logout(res: Response) {
+  //   res.clearCookie('ACCESS_TOKEN');
+  //   res.clearCookie('IS_LOGGED_IN');
+  //   res.clearCookie('REFRESH_TOKEN');
 
-    return {
-      message: 'Logout success',
-    };
-  }
+  //   return {
+  //     message: 'Logout success',
+  //   };
+  // }
 
-  async getRefreshToken(req: Request, res: Response) {
-    const refreshToken = req.cookies['REFRESH_TOKEN'];
+  // async getRefreshToken(req: Request, res: Response) {
+  //   const refreshToken = req.cookies['REFRESH_TOKEN'];
 
-    try {
-      const userDecode = jwt.verify(
-        refreshToken,
-        this.configService.get('JWT_SECERETE'),
-      ) as any;
+  //   try {
+  //     const userDecode = jwt.verify(
+  //       refreshToken,
+  //       this.configService.get('JWT_SECERETE'),
+  //     ) as any;
 
-      if (userDecode) {
-        const user = await this.usersService.findOne(userDecode.id);
-        const payload = {
-          id: user?._id,
-          isAdmin: user.isAdmin,
-          name: user.firstName + ' ' + user.lastName,
-          email: user.email,
-        };
-        const accessToken = this.generateAccessToken(payload);
+  //     if (userDecode) {
+  //       const user = await this.usersService.findOne(userDecode.id);
+  //       const payload = {
+  //         id: user?._id,
+  //         isAdmin: user.isAdmin,
+  //         name: user.firstName + ' ' + user.lastName,
+  //         email: user.email,
+  //       };
+  //       const accessToken = this.generateAccessToken(payload);
 
-        res.cookie('ACCESS_TOKEN', accessToken, {
-          path: '/',
-          maxAge: 1000 * 60 * 15,
-          httpOnly: true,
-          secure: false,
-        });
+  //       // res.cookie('ACCESS_TOKEN', accessToken, {
+  //       //   path: '/',
+  //       //   maxAge: 1000 * 60 * 15,
+  //       //   httpOnly: true,
+  //       //   secure: false,
+  //       // });
 
-        res.cookie('IS_LOGGED_IN', true, {
-          path: '/',
-          maxAge: 1000 * 60 * 15,
-          httpOnly: false,
-          secure: false,
-        });
+  //       // res.cookie('IS_LOGGED_IN', true, {
+  //       //   path: '/',
+  //       //   maxAge: 1000 * 60 * 15,
+  //       //   httpOnly: false,
+  //       //   secure: false,
+  //       // });
 
-        return { message: 'success', user: userDecode };
-      }
-    } catch (err) {
-      console.log(err);
-      throw new UnauthorizedException('refresh token not valid! Please login.');
-    }
-  }
+  //       return { message: 'success', user: userDecode };
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //     throw new UnauthorizedException('refresh token not valid! Please login.');
+  //   }
+  // }
 
   async validateUser(
     email: string,
@@ -125,9 +103,9 @@ export class AuthService {
     });
   }
 
-  generateRefreshToken(payload: any) {
-    return jwt.sign(payload, this.configService.get('JWT_SECERETE'), {
-      expiresIn: '1d',
-    });
-  }
+  // generateRefreshToken(payload: any) {
+  //   return jwt.sign(payload, this.configService.get('JWT_SECERETE'), {
+  //     expiresIn: '1d',
+  //   });
+  // }
 }
