@@ -6,7 +6,9 @@
     "deleteOutDir": true,
     "webpack": true,
     "tsConfigPath": "apps/nestjs-server/tsconfig.app.json",
-    "plugins": ["@nestjs/swagger"]
+    "plugins": [
+      "@nestjs/swagger"
+    ]
   },
   "monorepo": true,
   "root": "apps/nestjs-server",
@@ -18,7 +20,9 @@
       "sourceRoot": "apps/nestjs-server/src",
       "compilerOptions": {
         "tsConfigPath": "apps/nestjs-server/tsconfig.app.json",
-        "plugins": ["@nestjs/swagger"]
+        "plugins": [
+          "@nestjs/swagger"
+        ]
       }
     },
     "buyzone": {
@@ -28,7 +32,18 @@
       "sourceRoot": "apps/buyzone/src",
       "compilerOptions": {
         "tsConfigPath": "apps/buyzone/tsconfig.app.json",
-        "plugins": ["@nestjs/swagger"]
+        "plugins": [
+          "@nestjs/swagger"
+        ]
+      }
+    },
+    "email-server": {
+      "type": "application",
+      "root": "apps/email-server",
+      "entryFile": "main",
+      "sourceRoot": "apps/email-server/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/email-server/tsconfig.app.json"
       }
     }
   }
